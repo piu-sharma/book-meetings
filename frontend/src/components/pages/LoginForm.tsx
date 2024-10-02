@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import { AuthContext } from "@/contexts/Auth";
 import { Button } from "../ui/button";
 import {
@@ -11,7 +11,6 @@ import {
 } from "../ui/card";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { getToken } from "@/services/loginService";
 
 const LoginForm: React.FC = () => {
 	const [username, setUsername] = useState("");
@@ -78,34 +77,6 @@ const LoginForm: React.FC = () => {
 						<Button onClick={handleSubmit}>Login</Button>
 					</CardFooter>
 				</CardContent>
-
-				{/* <div>
-      <h2>Login</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="username">Username: </label>
-          <input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="password">Password: </label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <Button type="submit">Login</Button>
-      </form>
-    </div> */}
 			</Card>
 		</div>
 	);
