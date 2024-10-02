@@ -1,6 +1,6 @@
 import { API_URL } from "@/constants";
 import type { Room, Booking, API_ERROR } from "@/types";
-import { getToken, logoutUser } from "./loginService";
+import { getToken } from "./loginService";
 
 type FetchType = 'GET' | 'POST';
 
