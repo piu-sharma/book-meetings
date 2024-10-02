@@ -61,7 +61,7 @@ const LayoutWrapper = ({ children }: { children: ReactNode }) => {
 	const { isAuthenticated } = useContext(AuthContext);
 	const navigate = useNavigate();
 
-	if (!isAuthenticated) {
+	if (typeof isAuthenticated === "boolean" && !isAuthenticated) {
 		navigate("/");
 	}
 
@@ -70,7 +70,7 @@ const LayoutWrapper = ({ children }: { children: ReactNode }) => {
 			<div className="tw-py-2">
 				<Layout />
 			</div>
-			<div className="tw-w-lvw tw-py-2">{children}</div>
+			<div className="tw-w-lvw tw-p-2 ">{children}</div>
 		</div>
 	);
 };

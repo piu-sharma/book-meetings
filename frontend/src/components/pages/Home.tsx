@@ -1,84 +1,73 @@
+import { columnSort } from "@/helpers/tableHelpers";
 import { useToast } from "@/hooks/use-toast";
 import { getAvailableRooms } from "@/services/conference";
-import type { Room } from "@/types";
+import type { API_ERROR, Room } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import type { Column, ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
 import { useEffect } from "react";
 import { LayoutWrapper } from "../Layout";
 import { DataTable } from "../common/DataTable";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-
-const columnSort = (
-	{ column }: { column: Column<Room, string> },
-	colName: string,
-) => {
-	return (
-		// biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
-		<div
-			className="tw-flex tw-px-0 tw-py-2"
-			onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-		>
-			<span className="tw-cursor-pointer">{colName}</span>
-			<ArrowUpDown className="tw-ml-1 tw-h-3 tw-w-3 tw-cursor-pointer" />
-		</div>
-	);
-};
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
 	const {
 		data: roomsData,
 		isLoading: isRoomsLoading,
-		isError: roomFetchError,
-	} = useQuery<Room[]>({
+		error,
+	} = useQuery<Room[] | API_ERROR>({
 		queryKey: ["rooms"],
 		queryFn: getAvailableRooms,
 	});
 	const { toast } = useToast();
+	const navigate = useNavigate();
 	const columns: ColumnDef<Room, string>[] = [
 		{
 			accessorKey: "name",
 			header: ({ column }: { column: Column<Room, string> }) =>
-				columnSort({ column }, "Name"),
+				columnSort<Room>({ column }, "Name"),
 		},
 		{
 			accessorKey: "capacity",
 			header: ({ column }: { column: Column<Room, string> }) =>
-				columnSort({ column }, "Capacity"),
+				columnSort<Room>({ column }, "Capacity"),
 		},
 	];
 
 	useEffect(() => {
-		if (roomFetchError) {
+		const apiError = roomsData as API_ERROR;
+		if (apiError?.error || error) {
 			toast({
 				variant: "destructive",
 				title: "Uh oh! Something went wrong.",
-				description: "There was a problem with your request.",
+				description: apiError?.error.msg || "Error while fetching rooms data.",
 			});
+
+			if (apiError?.error && apiError.error.status === 403) {
+				navigate("/");
+			}
 		}
-	}, [roomFetchError, toast]);
+	}, [toast, error, roomsData, navigate]);
 	return (
 		<LayoutWrapper>
-			<div className="tw-px-3">
-				<Card>
-					<CardHeader className="tw-py-4">
-						<CardTitle>Available Rooms</CardTitle>
-					</CardHeader>
-					<CardContent className="tw-py-2">
-						<div>
-							{isRoomsLoading ? "..." : null}
-							{roomsData ? (
-								<DataTable
-									columns={columns}
-									data={roomsData}
-									filterByColumn="name"
-								/>
-							) : null}
-						</div>
-					</CardContent>
-				</Card>
-				&nbsp;
-			</div>
+			<Card>
+				<CardHeader className="tw-py-4">
+					<CardTitle>Available Rooms</CardTitle>
+				</CardHeader>
+				<CardContent className="tw-py-2">
+					<div>
+						{isRoomsLoading ? "..." : null}
+						{roomsData && !(roomsData as API_ERROR)?.error ? (
+							<DataTable
+								columns={columns}
+								data={roomsData as Room[]}
+								filterByColumn="name"
+							/>
+						) : null}
+					</div>
+				</CardContent>
+			</Card>
+			&nbsp;
 		</LayoutWrapper>
 	);
 };

@@ -1,9 +1,16 @@
 import { createContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
-import { loginUser, getToken, logoutUser } from "@/services/loginService";
+import {
+	loginUser,
+	getToken,
+	logoutUser,
+	getRole,
+	getUserName,
+} from "@/services/loginService";
+import { useNavigate } from "react-router-dom";
 
 interface AuthContextProps {
-	isAuthenticated: boolean;
+	isAuthenticated: boolean | null;
 	role: string | null;
 	userName: string | null;
 	login: (username: string, password: string) => Promise<void>;
@@ -19,12 +26,19 @@ export const AuthContext = createContext<AuthContextProps>({
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-	const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!getToken());
+	const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 	const [role, setRole] = useState<string | null>(null);
 	const [userName, setUserName] = useState<string | null>(null);
 
 	useEffect(() => {
-		setIsAuthenticated(!!getToken());
+		const hasToken = !!getToken();
+		setIsAuthenticated(hasToken);
+		if (hasToken) {
+			const role = getRole();
+			setRole(role);
+			const userName = getUserName();
+			setUserName(userName);
+		}
 	}, []);
 
 	const login = async (username: string, password: string) => {

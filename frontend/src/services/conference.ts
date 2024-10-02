@@ -1,5 +1,5 @@
 import { API_URL } from "@/constants";
-import type { Room, Booking } from "@/types";
+import type { Room, Booking, API_ERROR } from "@/types";
 import { getToken, logoutUser } from "./loginService";
 
 type FetchType = 'GET' | 'POST';
@@ -11,7 +11,7 @@ interface FetchOptions {
   postParams?: any,
 };
 
-async function fetchWrapper<T>(url: string, fetchOptions?: FetchOptions): Promise<T> {
+async function fetchWrapper<T>(url: string, fetchOptions?: FetchOptions): Promise<T | API_ERROR> {
   const method = fetchOptions?.method || 'GET';
   const options: {
     headers: HeadersInit,
@@ -31,23 +31,28 @@ async function fetchWrapper<T>(url: string, fetchOptions?: FetchOptions): Promis
     options.body = JSON.stringify(fetchOptions?.postParams);
   }
   const response = await fetch(url, options);
-  if (response.status === 403) {
+  /* if (response.status === 403) {
     logoutUser();
-  }
+  } */
   if (!response.ok) {
-    throw new Error(`Failed to ${method} url ${url}`); // Handle errors such as invalid credentials
+    return {
+      error: {
+        msg: `Failed to ${method} url ${url}`,
+        status: response.status
+      }
+    }; // Handle errors such as invalid credentials
   }
   return await response.json() as T;
 }
 
 // for admin only
-export const getAllBookings = async (): Promise<Booking[]> => {
+export const getAllBookings = async (): Promise<Booking[] | API_ERROR> => {
   const bookings = await fetchWrapper<Booking[]>(`${API_URL}/bookings`);
   return bookings;
 };
 
 // fetch bookings by user [NON-ADMIN role]
-export const getBookingsByUserId = async ({ userId }: { userId: string; }): Promise<Booking[]> => {
+export const getBookingsByUserId = async ({ userId }: { userId: string; }): Promise<Booking[] | API_ERROR> => {
   const bookings = await fetchWrapper<Booking[]>(`${API_URL}/my-bookings`, {
     method: "POST",
     postParams: { user: { email: userId } }
@@ -56,12 +61,12 @@ export const getBookingsByUserId = async ({ userId }: { userId: string; }): Prom
   return bookings; // Store the token for later use
 };
 
-export const getBookingCount = async ({ roomId }: { roomId: string; }): Promise<number> => {
+export const getBookingCount = async ({ roomId }: { roomId: string; }): Promise<number | API_ERROR> => {
   const count = await fetchWrapper<number>(`${API_URL}/booking-counts`, {});
   return count; // Store the token for later use
 };
 
-export const getAvailableRooms = async (): Promise<Room[]> => {
+export const getAvailableRooms = async (): Promise<Room[] | API_ERROR> => {
   const rooms = await fetchWrapper<Room[]>(`${API_URL}/rooms`, {});
   return rooms; // Store the token for later use
 };

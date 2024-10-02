@@ -19,6 +19,7 @@ export const loginUser = async (
   const { token, role } = await response.json(); // Extract the JWT token from the server's response
   localStorage.setItem("token", token); // Store the token for later use
   localStorage.setItem('role', role);
+  localStorage.setItem('username', username);
   return { role };
 };
 
@@ -30,7 +31,12 @@ export const getRole = (): string | null => {
   return localStorage.getItem("role"); // Retrieve the token from localStorage
 };
 
+export const getUserName = (): string | null => {
+  return localStorage.getItem("username"); // Retrieve the token from localStorage
+};
+
+
 export const logoutUser = (): void => {
   localStorage.removeItem("token"); // Remove the token from storage to log out the user
-  window.location.replace('/');
+  window.location.replace('/login');
 };

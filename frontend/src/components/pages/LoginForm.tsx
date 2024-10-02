@@ -11,12 +11,14 @@ import {
 } from "../ui/card";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm: React.FC = () => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState<string | null>(null);
 	const { login } = useContext(AuthContext);
+	const navigate = useNavigate();
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -25,6 +27,7 @@ const LoginForm: React.FC = () => {
 		try {
 			if (username && password) {
 				await login(username, password);
+				navigate("/");
 			} else {
 				throw new Error();
 			}

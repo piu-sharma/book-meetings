@@ -19,13 +19,16 @@ interface User {
   role: string;
 }
 
+interface API_ERROR {
+  error: {
+    msg: string;
+    status: number;
+  };
+}
+
 export type {
   Booking,
   Room,
   User,
+  API_ERROR,
 };
-
-export enum Roles {
-  user = 'user',
-  admin = 'admin',
-}
