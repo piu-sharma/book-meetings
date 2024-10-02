@@ -17,3 +17,18 @@ This is a full-stack project with a Node.js backend and frontend that simulates 
 
 - `admin@company.com` / `adminpass` (admin)
 - `user@company.com` / `userpass` (standard user)
+
+
+
+### Frontend
+Instructions to run frontend can be found in the frontend folder readme.
+
+## Work log:
+- Basic code infrastructure
+- Uses React, Typescript, RSPack, ShadCN and TailwindCSS
+- Uses BiomeJS as linter
+
+### Things left to do:
+- Write more UTs
+- Add basic Playwright tests
+- Setup CI/CD 
