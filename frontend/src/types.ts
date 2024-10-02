@@ -1,9 +1,9 @@
 interface Booking {
-  id: number;
+  id?: number;
   roomId?: string;
-  date?: number;
-  startTime?: number;
-  endTime?: number;
+  date?: string;
+  startTime?: string;
+  endTime?: string;
   title?: string;
   invitees?: string[];
 }

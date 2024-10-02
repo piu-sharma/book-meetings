@@ -1,53 +1,14 @@
-import { AuthContext } from "@/contexts/Auth";
-import { useContext, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import type { API_ERROR, Booking } from "@/types";
-import { getAllBookings, getBookingsByUserId } from "@/services/conference";
-import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import type { Column, ColumnDef } from "@tanstack/react-table";
 import { columnSort } from "@/helpers/tableHelpers";
-import { Roles } from "@/constants";
+import { useBookingsQuery } from "@/hooks/useBookingsQuery";
+import type { Booking } from "@/types";
+import type { Column, ColumnDef } from "@tanstack/react-table";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { BookRoomCTA } from "./CreateBooking";
 import { DataTable } from "./DataTable";
-import { useToast } from "@/hooks/use-toast";
-import { Button } from "../ui/button";
+import { ErrorMessage } from "./ErrorMessage";
 
 const BookingsWidget = () => {
-	const { role, userName } = useContext(AuthContext);
-	const { toast } = useToast();
-	const navigate = useNavigate();
-
-	const fetchFn =
-		role === Roles.user && userName
-			? () => getBookingsByUserId({ userId: userName })
-			: getAllBookings;
-
-	const {
-		data: bookings,
-		isLoading,
-		error,
-	} = useQuery<Booking[] | API_ERROR>({
-		queryKey: ["bookings"],
-		queryFn: fetchFn,
-		enabled: !!(role && userName),
-	});
-
-	// figure out a better way to handle this
-	// ErrorBoundry is likely a better way to handle this.
-	useEffect(() => {
-		const apiError = bookings as API_ERROR;
-		if (apiError?.error || error) {
-			toast({
-				variant: "destructive",
-				title: "Uh oh! Something went wrong.",
-				description: apiError?.error.msg || "Error while fetching rooms data.",
-			});
-
-			if (apiError?.error && apiError.error.status === 403) {
-				navigate("/");
-			}
-		}
-	}, [toast, error, bookings, navigate]);
+	const { bookings, isLoading, error } = useBookingsQuery();
 
 	const columns: ColumnDef<Booking, string>[] = [
 		{
@@ -64,26 +25,22 @@ const BookingsWidget = () => {
 	return (
 		<Card>
 			<CardHeader className="tw-py-4">
-				<CardTitle className="tw-flex tw-justify-between">
-					<div>Available Rooms</div>
+				<CardTitle className="tw-flex tw-align-middle tw-justify-between">
+					<div className="tw-align-middle tw-py-2">Available Rooms</div>
 					<div>
-						<Button
-							variant="default"
-							className="tw-bg-emerald-500 hover:tw-bg-emerald-600"
-						>
-							Get a Room!
-						</Button>
+						<BookRoomCTA />
 					</div>
 				</CardTitle>
 			</CardHeader>
 			<CardContent className="tw-py-2">
 				<div>
 					{isLoading ? "..." : null}
+					{error ? <ErrorMessage errorMsg="An error occured" /> : null}
 					{bookings ? (
 						<DataTable
 							columns={columns}
 							data={bookings as Booking[]}
-							filterByColumn="name"
+							filterByColumn="title"
 						/>
 					) : null}
 				</div>

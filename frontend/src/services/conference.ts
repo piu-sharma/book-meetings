@@ -70,3 +70,11 @@ export const getAvailableRooms = async (): Promise<Room[] | API_ERROR> => {
   const rooms = await fetchWrapper<Room[]>(`${API_URL}/rooms`, {});
   return rooms; // Store the token for later use
 };
+
+export const createBooking = async (booking: Booking): Promise<undefined | API_ERROR> => {
+  const resp = await fetchWrapper<undefined>(`${API_URL}/bookings`, {
+    postParams: booking,
+    method: 'POST'
+  });
+  return resp;
+};
