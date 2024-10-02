@@ -34,7 +34,8 @@
 			"jsxQuoteStyle": "double",
 			"quoteProperties": "asNeeded",
 			"semicolons": "always",
-			"trailingCommas": "all"
+			"trailingCommas": "all",
+			"lineEnding": "lf"
 		}
 	}
 }
