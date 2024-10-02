@@ -12,9 +12,9 @@
 	"formatter": {
 		"enabled": true,
 		"indentStyle": "space",
-		"indentSize": 2,
+		"indentWidth": 2,
 		"lineWidth": 150,
-    "lineEnding": "lf"
+		"lineEnding": "lf"
 	},
 	"organizeImports": {
 		"enabled": true
@@ -28,13 +28,13 @@
 	"javascript": {
 		"formatter": {
 			"quoteStyle": "single",
-			"arrowParentheses":"always",
-      "bracketSameLine": true,
-      "bracketSpacing": true,
-      "jsxQuoteStyle": "double",
-      "quoteProperties": "asNeeded",
-      "semicolons": "always",
-      "trailingCommas": "all"
+			"arrowParentheses": "always",
+			"bracketSameLine": true,
+			"bracketSpacing": true,
+			"jsxQuoteStyle": "double",
+			"quoteProperties": "asNeeded",
+			"semicolons": "always",
+			"trailingCommas": "all"
 		}
 	}
 }

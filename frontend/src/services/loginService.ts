@@ -23,13 +23,5 @@ export const getToken = (): string | null => {
 
 export const logoutUser = (): void => {
   localStorage.removeItem("token"); // Remove the token from storage to log out the user
-
+  window.location.replace('/');
 };
-
-/* const token = getToken();
-const response = await fetch(`${API_URL}/some-protected-route`, {
-  method: "GET",
-  headers: {
-    "Authorization": `Bearer ${token}`,
-  },
-}); */

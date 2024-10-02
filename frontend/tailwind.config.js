@@ -72,6 +72,7 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        customHover: 'rgb(67 67 67)'
       },
       borderRadius: {
         lg: "var(--radius)",

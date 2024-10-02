@@ -1,19 +1,15 @@
 import { AuthContext } from "@/contexts/Auth";
 import { useContext } from "react";
-import LoginForm from "./LoginForm";
-import { MainApp } from "./MainApp";
+import LoginForm from "./pages/LoginForm";
+import { MainApp } from "./pages/Home";
 
 const MainContent = () => {
-  const { isAuthenticated } = useContext(AuthContext);
+	const { isAuthenticated } = useContext(AuthContext);
 
-  if (isAuthenticated) {
-    return (
-        <MainApp />
-    );
-  } else {
-    return (
-      <LoginForm />);
-  }
+	if (isAuthenticated) {
+		return <MainApp />;
+	}
+	return <LoginForm />;
 };
 
 export { MainContent };

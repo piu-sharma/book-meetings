@@ -1,6 +1,6 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "@/contexts/Auth";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import {
 	Card,
 	CardContent,
@@ -8,9 +8,10 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from "./ui/card";
-import { Label } from "./ui/label";
-import { Input } from "./ui/input";
+} from "../ui/card";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
+import { getToken } from "@/services/loginService";
 
 const LoginForm: React.FC = () => {
 	const [username, setUsername] = useState("");
