@@ -24,3 +24,8 @@ export type {
   Room,
   User,
 };
+
+export enum Roles {
+  user = 'user',
+  admin = 'admin',
+}

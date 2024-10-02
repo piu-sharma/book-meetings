@@ -7,7 +7,9 @@ import {
 } from "@radix-ui/react-navigation-menu";
 import { Button } from "./ui/button";
 import { logoutUser } from "@/services/loginService";
-import type { ReactNode } from "react";
+import { useContext, type ReactNode } from "react";
+import { AuthContext } from "@/contexts/Auth";
+import { useNavigate } from "react-router-dom";
 
 const Layout = () => {
 	return (
@@ -56,10 +58,19 @@ const Layout = () => {
 };
 
 const LayoutWrapper = ({ children }: { children: ReactNode }) => {
+	const { isAuthenticated } = useContext(AuthContext);
+	const navigate = useNavigate();
+
+	if (!isAuthenticated) {
+		navigate("/");
+	}
+
 	return (
 		<div className="tw-h-screen tw-pr-1 tw-bg-gradient-to-tl tw-from-white tw-to-zinc-50 tw-text-slate-800 tw-flex">
-			<Layout />
-			{children}
+			<div className="tw-py-2">
+				<Layout />
+			</div>
+			<div className="tw-w-lvw tw-py-2">{children}</div>
 		</div>
 	);
 };

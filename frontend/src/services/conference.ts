@@ -40,11 +40,13 @@ async function fetchWrapper<T>(url: string, fetchOptions?: FetchOptions): Promis
   return await response.json() as T;
 }
 
+// for admin only
 export const getAllBookings = async (): Promise<Booking[]> => {
   const bookings = await fetchWrapper<Booking[]>(`${API_URL}/bookings`);
   return bookings;
 };
 
+// fetch bookings by user [NON-ADMIN role]
 export const getBookingsByUserId = async ({ userId }: { userId: string; }): Promise<Booking[]> => {
   const bookings = await fetchWrapper<Booking[]>(`${API_URL}/my-bookings`, {
     method: "POST",

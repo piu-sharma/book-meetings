@@ -1,6 +1,9 @@
 import { API_URL } from "@/constants";
 
-export const loginUser = async (username: string, password: string): Promise<void> => {
+export const loginUser = async (
+  username: string,
+  password: string
+): Promise<{ role: string; }> => {
   const response = await fetch(`${API_URL}/login`, {
     method: "POST",
     headers: {
@@ -13,12 +16,18 @@ export const loginUser = async (username: string, password: string): Promise<voi
     throw new Error("Login failed"); // Handle errors such as invalid credentials
   }
 
-  const { token } = await response.json(); // Extract the JWT token from the server's response
+  const { token, role } = await response.json(); // Extract the JWT token from the server's response
   localStorage.setItem("token", token); // Store the token for later use
+  localStorage.setItem('role', role);
+  return { role };
 };
 
 export const getToken = (): string | null => {
   return localStorage.getItem("token"); // Retrieve the token from localStorage
+};
+
+export const getRole = (): string | null => {
+  return localStorage.getItem("role"); // Retrieve the token from localStorage
 };
 
 export const logoutUser = (): void => {
