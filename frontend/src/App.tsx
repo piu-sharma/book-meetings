@@ -1,4 +1,4 @@
-import { MainContent } from "./components/MainContent";
+import { Home } from "./components/pages/Home";
 import Analytics from "./components/pages/Analytics";
 import Bookings from "./components/pages/Bookings";
 import Dashboard from "./components/pages/Dashboard";
@@ -32,7 +32,7 @@ function App() {
 							<Route path="/dashboard" element={<Dashboard />} />
 							<Route path="/bookings" element={<Bookings />} />
 							<Route path="/analytics" element={<Analytics />} />
-							<Route path="/" element={<MainContent />} />
+							<Route path="/" element={<Home />} />
 						</Routes>
 					</Router>
 				</QueryClientProvider>
