@@ -29,7 +29,7 @@ export function validateBooking({
     };
   }
 
-  if (endTime - startTime < 15 * 1000 * 60) {
+  if (endTime - startTime < 1000 * 60 * 15) { // 15 mins
     return {
       errorMsg: 'Meeting time is smaller than 15 mins',
       isValid: false,
@@ -37,7 +37,7 @@ export function validateBooking({
   }
 
   // should be < 24 hours
-  if (endTime - startTime > 18 * 1000 * 60 * 60) {
+  if (endTime - startTime > 1000 * 60 * 60 * 18) {
     return {
       errorMsg: 'Meeting time is greater than 18 hrs',
       isValid: false,
