@@ -9,6 +9,7 @@ import { LayoutWrapper } from "../Layout";
 import { DataTable } from "../common/DataTable";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { useNavigate } from "react-router-dom";
+import { logoutUser } from "@/services/loginService";
 
 const Home = () => {
 	const {
@@ -44,6 +45,7 @@ const Home = () => {
 			});
 
 			if (apiError?.error && apiError.error.status === 403) {
+				logoutUser();
 				navigate("/");
 			}
 		}
