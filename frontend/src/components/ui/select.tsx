@@ -80,7 +80,7 @@ const SelectContent = React.forwardRef<
 			className={cn(
 				"tw-relative tw-z-500 tw-max-h-96 tw-min-w-[8rem] tw-overflow-hidden tw-rounded-md tw-border tw-bg-popover tw-text-popover-foreground tw-shadow-md data-[state=open]:tw-animate-in data-[state=closed]:tw-animate-out data-[state=closed]:tw-fade-out-0 data-[state=open]:tw-fade-in-0 data-[state=closed]:tw-zoom-out-95 data-[state=open]:tw-zoom-in-95 data-[side=bottom]:tw-slide-in-from-top-2 data-[side=left]:tw-slide-in-from-right-2 data-[side=right]:tw-slide-in-from-left-2 data-[side=top]:tw-slide-in-from-bottom-2",
 				position === "popper" &&
-					"data-[side=bottom]:tw-translate-y-1 data-[side=left]:tw--translate-x-1 data-[side=right]:tw-translate-x-1 data-[side=top]:tw--translate-y-1",
+					"data-[side=bottom]:tw-translate-y-1 data-[side=left]:tw-translate-x-1 data-[side=right]:tw-translate-x-1 data-[side=top]:tw-translate-y-1",
 				className,
 			)}
 			position={position}
@@ -142,7 +142,7 @@ const SelectSeparator = React.forwardRef<
 >(({ className, ...props }, ref) => (
 	<SelectPrimitive.Separator
 		ref={ref}
-		className={cn("tw--mx-1 tw-my-1 tw-h-px tw-bg-muted", className)}
+		className={cn("tw-mx-1 tw-my-1 tw-h-px tw-bg-muted", className)}
 		{...props}
 	/>
 ));

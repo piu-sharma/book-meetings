@@ -55,5 +55,9 @@
 		"ts-node": "^10.9.2",
 		"tsx": "^4.19.1",
 		"typescript": "^5.3.3"
+	},
+	"overrides": {
+		"@radix-ui/react-dismissable-layer": "^1.0.5",
+		"@radix-ui/react-focus-scope": "^1.0.4"
 	}
 }
