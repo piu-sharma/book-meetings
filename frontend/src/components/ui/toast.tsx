@@ -16,7 +16,7 @@ const ToastViewport = React.forwardRef<
 	<ToastPrimitives.Viewport
 		ref={ref}
 		className={cn(
-			"tw-fixed tw-top-0 tw-z-[100] tw-flex tw-max-h-screen tw-w-full tw-flex-col-reverse tw-p-4 sm:tw-bottom-0 sm:tw-right-0 sm:tw-top-auto sm:tw-flex-col md:tw-max-w-[420px]",
+			"tw-fixed tw-top-1 tw-right-1 tw-z-[100] tw-flex tw-max-h-full tw-w-full tw-flex-col-reverse tw-p-4 sm:tw-top-1 sm:tw-right-0 sm:tw-top-0 sm:tw-flex-col md:tw-max-w-[420px]",
 			className,
 		)}
 		{...props}
@@ -25,13 +25,13 @@ const ToastViewport = React.forwardRef<
 ToastViewport.displayName = ToastPrimitives.Viewport.displayName;
 
 const toastVariants = cva(
-	"tw-group tw-pointer-events-auto tw-relative tw-flex tw-w-full tw-items-center tw-justify-between tw-space-x-2 tw-overflow-hidden tw-rounded-md tw-border tw-p-4 tw-pr-6 tw-shadow-lg tw-transition-all data-[swipe=cancel]:tw-translate-x-0 data-[swipe=end]:tw-translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:tw-translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:tw-transition-none data-[state=open]:tw-animate-in data-[state=closed]:tw-animate-out data-[swipe=end]:tw-animate-out data-[state=closed]:tw-fade-out-80 data-[state=closed]:tw-slide-out-to-right-full data-[state=open]:tw-slide-in-from-top-full data-[state=open]:sm:tw-slide-in-from-bottom-full",
+	"tw-group tw-pointer-events-auto tw-relative tw-flex tw-w-full tw-items-center tw-justify-between tw-space-x-2 tw-overflow-hidden tw-rounded-md tw-border tw-p-4 tw-pr-6 tw-shadow-lg tw-transition-all data-[swipe=cancel]:tw-translate-x-0 data-[swipe=end]:tw-translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:tw-translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:tw-transition-none data-[state=open]:tw-animate-in data-[state=closed]:tw-animate-out data-[swipe=end]:tw-animate-out data-[state=closed]:tw-fade-out-80 data-[state=closed]:tw-slide-out-to-right-full data-[state=open]:tw-slide-in-from-top-full data-[state=open]:sm:tw-slide-in-from-top-full",
 	{
 		variants: {
 			variant: {
-				default: "border bg-background text-foreground",
+				default: "tw-border tw-bg-background tw-text-foreground",
 				destructive:
-					"destructive group border-destructive bg-destructive text-destructive-foreground",
+					"tw-destructive tw-group tw-border-destructive tw-bg-destructive tw-text-destructive-foreground",
 			},
 		},
 		defaultVariants: {

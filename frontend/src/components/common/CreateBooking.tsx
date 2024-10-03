@@ -9,19 +9,21 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { useRoomQuery } from "@/hooks/useRoomQuery";
-import { cn, validateBooking } from "@/lib/utils";
+import { validateBooking } from "@/lib/utils";
 import { SelectContent, SelectItem } from "@radix-ui/react-select";
 import * as React from "react";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { Select, SelectTrigger, SelectValue } from "../ui/select";
-import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { createBooking } from "@/services/conference";
+import { Input } from "../ui/input";
+import { Select, SelectTrigger, SelectValue } from "../ui/select";
+import { Textarea } from "../ui/textarea";
 
-export function BookRoomCTA() {
+export function BookRoomCTA({
+	refetchBooks,
+}: { refetchBooks: () => Promise<void> }) {
 	const [open, setOpen] = React.useState(false);
 
 	return (
@@ -39,7 +41,10 @@ export function BookRoomCTA() {
 					<DialogTitle>Get a Room!</DialogTitle>
 					<DialogDescription>Reserve a room for a meeting.</DialogDescription>
 				</DialogHeader>
-				<ProfileForm closeHandler={() => setOpen(false)} />
+				<BookingForm
+					closeHandler={() => setOpen(false)}
+					refetchBooks={refetchBooks}
+				/>
 			</DialogContent>
 		</Dialog>
 	);
@@ -55,10 +60,14 @@ const defaultBooking = () => {
 	};
 };
 
-function ProfileForm({
+function BookingForm({
 	closeHandler,
 	className,
-}: { closeHandler: () => void } & React.ComponentProps<"form">) {
+	refetchBooks,
+}: {
+	closeHandler: () => void;
+	refetchBooks: () => Promise<void>;
+} & React.ComponentProps<"form">) {
 	const {
 		title: defTitle,
 		endTime: defEndTime,
@@ -75,6 +84,7 @@ function ProfileForm({
 	const [title, setTitle] = useState<string>(defTitle);
 	const [invitees, setInvitees] = useState<string>(defInvitees);
 
+	// const { showToast, ToastContainer } = useToast();
 	const { toast } = useToast();
 
 	if (isRoomsLoading) return "...";
@@ -129,6 +139,10 @@ function ProfileForm({
 				// biome-ignore lint/style/noNonNullAssertion: <explanation>
 				roomId: selectedRoom!,
 			});
+			toast({
+				title: "Booking Saved!",
+			});
+			await refetchBooks();
 			closeHandler();
 		} catch (e: unknown) {
 			toast({
@@ -214,6 +228,7 @@ function ProfileForm({
 			</div>
 
 			<Button onClick={onSubmitBooking}>Save changes</Button>
+			{/* <ToastContainer /> */}
 		</>
 	);
 }

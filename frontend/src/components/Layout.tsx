@@ -1,3 +1,5 @@
+import { AuthContext } from "@/contexts/Auth";
+import { logoutUser } from "@/services/loginService";
 import {
 	Link,
 	NavigationMenu,
@@ -5,11 +7,10 @@ import {
 	NavigationMenuLink,
 	NavigationMenuList,
 } from "@radix-ui/react-navigation-menu";
-import { Button } from "./ui/button";
-import { logoutUser } from "@/services/loginService";
-import { useContext, useEffect, type ReactNode } from "react";
-import { AuthContext } from "@/contexts/Auth";
+import { type ReactNode, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Button } from "./ui/button";
+import { Toaster } from "./ui/toaster";
 
 const getActiveClass = (path: string, href: string) => {
 	const pathToken = path.split("/");
@@ -106,7 +107,10 @@ const LayoutWrapper = ({ children }: { children: ReactNode }) => {
 			<div className="tw-py-2">
 				<Layout />
 			</div>
-			<div className="tw-w-lvw tw-p-2 ">{children}</div>
+			<div className="tw-w-lvw tw-p-2 ">
+				{children}
+				<Toaster />
+			</div>
 		</div>
 	);
 };

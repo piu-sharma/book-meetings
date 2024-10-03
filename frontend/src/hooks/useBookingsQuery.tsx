@@ -23,6 +23,8 @@ const useBookingsQuery = () => {
 		data: bookings,
 		isLoading,
 		error,
+		refetch,
+		isRefetchError,
 	} = useQuery<Booking[] | API_ERROR>({
 		queryKey: ["bookings"],
 		queryFn: fetchFn,
@@ -51,6 +53,8 @@ const useBookingsQuery = () => {
 		bookings,
 		isLoading,
 		error,
+		refetch,
+		isRefetchError,
 	};
 };
 

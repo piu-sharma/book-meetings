@@ -8,7 +8,7 @@ import { DataTable } from "./DataTable";
 import { ErrorMessage } from "./ErrorMessage";
 
 const BookingsWidget = () => {
-	const { bookings, isLoading, error } = useBookingsQuery();
+	const { bookings, isLoading, error, refetch } = useBookingsQuery();
 
 	const columns: ColumnDef<Booking, string>[] = [
 		{
@@ -28,7 +28,11 @@ const BookingsWidget = () => {
 				<CardTitle className="tw-flex tw-align-middle tw-justify-between">
 					<div className="tw-align-middle tw-py-2">Available Rooms</div>
 					<div>
-						<BookRoomCTA />
+						<BookRoomCTA
+							refetchBooks={async () => {
+								await refetch();
+							}}
+						/>
 					</div>
 				</CardTitle>
 			</CardHeader>
