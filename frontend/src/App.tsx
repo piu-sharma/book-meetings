@@ -1,13 +1,13 @@
-import { Home } from "./components/pages/Home";
 import Analytics from "./components/pages/Analytics";
 import Bookings from "./components/pages/Bookings";
 import Dashboard from "./components/pages/Dashboard";
+import { Home } from "./components/pages/Home";
 import LoginForm from "./components/pages/LoginForm";
 import { AuthProvider } from "./contexts/Auth";
 import "./index.css";
 import "./output.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
 const queryClient = new QueryClient({
 	defaultOptions: {
