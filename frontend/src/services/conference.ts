@@ -1,5 +1,5 @@
 import { API_URL } from "@/constants";
-import type { Room, Booking, API_ERROR } from "@/types";
+import type { Room, Booking, API_ERROR, RoomsBookingCount, BookingsTimeSeries } from "@/types";
 import { getToken } from "./loginService";
 
 type FetchType = 'GET' | 'POST';
@@ -61,9 +61,9 @@ export const getBookingsByUserId = async ({ userId }: { userId: string; }): Prom
   return bookings; // Store the token for later use
 };
 
-export const getBookingCount = async ({ roomId }: { roomId: string; }): Promise<number | API_ERROR> => {
-  const count = await fetchWrapper<number>(`${API_URL}/booking-counts`, {});
-  return count; // Store the token for later use
+export const getBookingCount = async (): Promise<RoomsBookingCount[] | API_ERROR> => {
+  const countList = await fetchWrapper<RoomsBookingCount[]>(`${API_URL}/booking-counts`, {});
+  return countList; // Store the token for later use
 };
 
 export const getAvailableRooms = async (): Promise<Room[] | API_ERROR> => {
@@ -78,3 +78,10 @@ export const createBooking = async (booking: Booking): Promise<undefined | API_E
   });
   return resp;
 };
+
+export const getBookSeriesData = async (startDate: string, endDate: string): Promise<BookingsTimeSeries | API_ERROR> => {
+  const resp = await fetchWrapper<BookingsTimeSeries>(`${API_URL}/booking-series?startDate=${startDate}&endDate=${endDate}`, {
+    method: 'GET'
+  });
+  return resp;
+}; 

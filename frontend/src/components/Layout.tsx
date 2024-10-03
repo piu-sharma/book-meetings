@@ -11,6 +11,7 @@ import { type ReactNode, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 import { Toaster } from "./ui/toaster";
+import { Roles } from "@/constants";
 
 const getActiveClass = (path: string, href: string) => {
 	const pathToken = path.split("/");
@@ -26,7 +27,7 @@ const getActiveClass = (path: string, href: string) => {
 
 const Layout = () => {
 	const path = window.location.pathname;
-
+	const { role } = useContext(AuthContext);
 	return (
 		<NavigationMenu className="tw-h-full tw-justify-between tw-flex tw-flex-col tw-border-r-2">
 			<NavigationMenuList className="tw-h-full">
@@ -42,7 +43,7 @@ const Layout = () => {
 						</Link>
 					</NavigationMenuLink>
 				</NavigationMenuItem>
-				<NavigationMenuItem>
+				{/* <NavigationMenuItem>
 					<NavigationMenuLink asChild>
 						<Link href="/dashboard">
 							<Button
@@ -53,7 +54,7 @@ const Layout = () => {
 							</Button>
 						</Link>
 					</NavigationMenuLink>
-				</NavigationMenuItem>
+				</NavigationMenuItem> */}
 				<NavigationMenuItem>
 					<NavigationMenuLink asChild>
 						<Link href="/bookings">
@@ -66,18 +67,20 @@ const Layout = () => {
 						</Link>
 					</NavigationMenuLink>
 				</NavigationMenuItem>
-				<NavigationMenuItem>
-					<NavigationMenuLink asChild>
-						<Link href="/analytics">
-							<Button
-								variant="link"
-								className={`tw-rounded-none ${getActiveClass(path, "analytics")}`}
-							>
-								Analytics
-							</Button>
-						</Link>
-					</NavigationMenuLink>
-				</NavigationMenuItem>
+				{role === Roles.admin ? (
+					<NavigationMenuItem>
+						<NavigationMenuLink asChild>
+							<Link href="/analytics">
+								<Button
+									variant="link"
+									className={`tw-rounded-none ${getActiveClass(path, "analytics")}`}
+								>
+									Analytics
+								</Button>
+							</Link>
+						</NavigationMenuLink>
+					</NavigationMenuItem>
+				) : null}
 			</NavigationMenuList>
 			<NavigationMenuList>
 				<NavigationMenuItem>

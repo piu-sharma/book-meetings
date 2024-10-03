@@ -26,9 +26,20 @@ interface API_ERROR {
   };
 }
 
+interface RoomsBookingCount {
+  bookName: string;
+  count: number;
+}
+
+interface BookingsTimeSeries {
+  [key: string]: number;
+}
+
 export type {
   Booking,
   Room,
   User,
   API_ERROR,
+  RoomsBookingCount,
+  BookingsTimeSeries,
 };

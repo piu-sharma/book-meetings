@@ -166,10 +166,7 @@ function BookingForm({
 					onChange={(e) => setTitle(e.currentTarget.value)}
 				/>
 				<Label htmlFor="roomSelector">Select Room</Label>
-				<Select
-					onValueChange={onSelectRoom}
-					value={typeof selectedRoom === "string" ? selectedRoom : undefined}
-				>
+				<Select onValueChange={onSelectRoom} value={selectedRoom?.toString()}>
 					<SelectTrigger className="tw-max-w-[300px] tw-w-[360px]">
 						<SelectValue
 							placeholder="Select a verified email to display"
@@ -180,6 +177,7 @@ function BookingForm({
 					<SelectContent className="tw-bg-white tw-border-2 tw-z-[500] tw-border-1 tw-max-w-[300px] tw-w-[360px]">
 						{roomsData.map((room) => (
 							<SelectItem
+								aria-selected={selectedRoom === room.id.toString()}
 								className="hover:tw-bg-slate-200 tw-p-1 tw-border-1 tw-border-black tw-cursor-pointer tw-z-[500] tw-max-w-[300px] tw-w-[360px]"
 								key={room.id + room.name}
 								value={room.id.toString()}
