@@ -27,37 +27,32 @@ jobs:
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}        
       
-        # 3. Deploy Backend to Vercel
-      - name: Deploy Backend to Vercel
+      - name: Build backend
         run: |
-          cd backend
-          npm i
-          vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }} 
-          vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-          vercel deploy --prebuilt --prod --token ${{ secrets.VERCEL_TOKEN }} --yes > deployment.json 
-          cat deployment.json
-        # env: 
+          cd backend && npm install
+
+      # env: 
         #   API_SERVER: ${{ secrets.API_SERVER }}
       # npm install -g vercel
       # vercel --token ${{ secrets.VERCEL_TOKEN }} --prod --output=json > deployment.json
       # cat deployment.json
 
       # 4. Capture and store the Backend URL
-      - name: Extract Backend URL
-        id: extract-backend-url
-        run: |
-          url=$(cat backend/deployment.json | jq -r '.url')
-          echo "Backend URL: $url"
-          echo "::set-output name=url::$url"
+      # - name: Extract Backend URL
+      #   id: extract-backend-url
+      #   run: |
+      #     url=$(cat backend/deployment.json | jq -r '.url')
+      #     echo "Backend URL: $url"
+      #     echo "::set-output name=url::$url"
 
       # 5. Store the backend URL in GitHub Secrets or Environments
-      - name: Store Backend URL in Environment
-        run: |
-          echo "API_SERVER=${{ steps.extract-backend-url.outputs.url }}" > .env
-          # Upload this env file for use in the frontend workflow
-          echo "Saving API_SERVER URL in GitHub environment."
-        env:
-          API_SERVER: ${{ steps.extract-backend-url.outputs.url }}
+      # - name: Store Backend URL in Environment
+      #   run: |
+      #     echo "API_SERVER=${{ steps.extract-backend-url.outputs.url }}" > .env
+      #     # Upload this env file for use in the frontend workflow
+      #     echo "Saving API_SERVER URL in GitHub environment."
+      #   env:
+      #     API_SERVER: ${{ steps.extract-backend-url.outputs.url }}
 
       # 3. Cache node_modules for faster builds
       - name: Cache Node.js modules
@@ -91,10 +86,22 @@ jobs:
           echo "Building frontend with API_SERVER=${{ secrets.API_SERVER }}"
           npm run build
 
-      # 5. Deploy frontend to Vercel using Vercel CLI
-      - name: Deploy Frontend to Vercel
+      - name: Copy assets to backend folder
         run: |
-          cd frontend
-          npm install -g vercel
+          mkdir backend/public
+          cp frontend/build/* backend/public
+
+        # 3. Deploy Backend to Vercel
+      - name: Deploy Backend to Vercel
+        run: |
+          vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }} 
           vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-          vercel deploy --prebuilt --prod --token ${{ secrets.VERCEL_TOKEN }} -e API_SERVER=${{ secrets.API_SERVER }} --yes
+          vercel deploy --prebuilt --prod --token ${{ secrets.VERCEL_TOKEN }}
+
+      # 5. Deploy frontend to Vercel using Vercel CLI
+      # - name: Deploy Frontend to Vercel
+      #   run: |
+      #     cd frontend
+      #     npm install -g vercel
+      #     vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+      #     vercel deploy --prebuilt --prod --token ${{ secrets.VERCEL_TOKEN }} -e API_SERVER=${{ secrets.API_SERVER }} --yes

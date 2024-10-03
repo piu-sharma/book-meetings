@@ -1,4 +1,5 @@
-const API_URL = process.env.API_SERVER; // Replace with your actual API URL
+const isDev = process.env.NODE_ENV === "development";
+const API_URL = isDev ? process.env.API_SERVER : ''; // Replace with your actual API URL
 
 const Roles = {
   user: 'user',

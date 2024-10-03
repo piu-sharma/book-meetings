@@ -4,6 +4,7 @@ const cors = require("cors");
 const csv = require("csv-parser");
 const fs = require("node:fs");
 const http = require("node:http");
+const path = require("node:path");
 const WebSocket = require("ws");
 require("dotenv").config();
 
@@ -197,7 +198,14 @@ wss.on("connection", (ws) => {
 	ws.send(JSON.stringify({ message: "Connected to WebSocket" }));
 });
 
+app.use(express.static(path.join(__dirname, "public")));
+
+// For any other route, serve the index.html file
+app.get("/*", (req, res) => {
+	res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
 // Start the server
-server.listen(3001, () => {
-	console.log("Backend server running on port 3001");
+server.listen(8080, () => {
+	console.log("Backend server running on port 8080");
 });
