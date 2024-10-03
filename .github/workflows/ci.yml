@@ -1,0 +1,100 @@
+name: Deploy Backend to Vercel
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allows you to manually trigger this workflow
+
+jobs:
+  deploy-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout the code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}        
+      
+        # 3. Deploy Backend to Vercel
+      - name: Deploy Backend to Vercel
+        run: |
+          cd backend
+          npm i
+          vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }} 
+          vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+          vercel deploy --prebuilt --prod --token ${{ secrets.VERCEL_TOKEN }} --yes > deployment.json 
+          cat deployment.json
+        # env: 
+        #   API_SERVER: ${{ secrets.API_SERVER }}
+      # npm install -g vercel
+      # vercel --token ${{ secrets.VERCEL_TOKEN }} --prod --output=json > deployment.json
+      # cat deployment.json
+
+      # 4. Capture and store the Backend URL
+      - name: Extract Backend URL
+        id: extract-backend-url
+        run: |
+          url=$(cat backend/deployment.json | jq -r '.url')
+          echo "Backend URL: $url"
+          echo "::set-output name=url::$url"
+
+      # 5. Store the backend URL in GitHub Secrets or Environments
+      - name: Store Backend URL in Environment
+        run: |
+          echo "API_SERVER=${{ steps.extract-backend-url.outputs.url }}" > .env
+          # Upload this env file for use in the frontend workflow
+          echo "Saving API_SERVER URL in GitHub environment."
+        env:
+          API_SERVER: ${{ steps.extract-backend-url.outputs.url }}
+
+      # 3. Cache node_modules for faster builds
+      - name: Cache Node.js modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            backend/node_modules
+            frontend/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+
+      # 4. Install dependencies for the frontend
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          npm install
+
+      # 5. Run tests for backend and frontend using npm
+      - name: Run tests
+        run: |
+          cd frontend && npm run test
+
+      # 5. Build frontend using the API_SERVER environment variable
+      - name: Build frontend with API_SERVER
+        env:
+          API_SERVER: ${{ secrets.API_SERVER }} # Use the stored backend URL from GitHub Secrets
+        run: |
+          cd frontend
+          echo "Building frontend with API_SERVER=${{ secrets.API_SERVER }}"
+          npm run build
+
+      # 5. Deploy frontend to Vercel using Vercel CLI
+      - name: Deploy Frontend to Vercel
+        run: |
+          cd frontend
+          npm install -g vercel
+          vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+          vercel deploy --prebuilt --prod --token ${{ secrets.VERCEL_TOKEN }} -e API_SERVER=${{ secrets.API_SERVER }} --yes
