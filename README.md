@@ -32,3 +32,9 @@ Instructions to run frontend can be found in the frontend folder readme.
 - Write more UTs
 - Add basic Playwright tests
 - Setup CI/CD 
+
+
+### Known bugs:
+- ~Toasts do not show up for some reason~
+- ~Select dropdowns have wrong z-index~
+- Select does not reflect the value selected. (Seems like an issue with ShadCN selector, might fix later.)
