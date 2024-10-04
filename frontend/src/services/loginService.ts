@@ -38,5 +38,7 @@ export const getUserName = (): string | null => {
 
 export const logoutUser = (): void => {
   localStorage.removeItem("token"); // Remove the token from storage to log out the user
+  localStorage.removeItem('role');
+  localStorage.removeItem('username');
   window.location.replace('/login');
 };

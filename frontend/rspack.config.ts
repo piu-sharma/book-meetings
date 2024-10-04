@@ -14,6 +14,9 @@ export default defineConfig({
   entry: {
     main: "./src/main.tsx"
   },
+  output: {
+    path: path.resolve(__dirname, "./build"),
+  },
   resolve: {
     extensions: ["...", ".ts", ".tsx", ".jsx"],
     alias: {
@@ -80,7 +83,6 @@ export default defineConfig({
     css: true
   },
   devServer: {
-    port: 3000,
     historyApiFallback: true,
   },
 });
