@@ -14,7 +14,8 @@ const wss = new WebSocket.Server({ server });
 app.use(express.json());
 app.use(cors());
 
-const SECRET_KEY = process.env.SECRET_KEY;
+const SECRET_KEY =
+	process.env.SECRET_KEY || "8Xqw/1jotrSQ3qO6qEYjU898G4owD3NCSv7BHp7VjPo=";
 
 // Load rooms from CSV
 const rooms = [];
@@ -53,28 +54,60 @@ function authenticate(req, res, next) {
 
 // Admin Authorization Middleware
 function authorizeAdmin(req, res, next) {
-	if (req.user.role !== "admin") {
-		return res.status(403).json({ error: "Admin access required" });
-	}
-	next();
-}
+	try {
+		const token = req.headers.authorization?.split(" ")[1];
+		if (!token) return res.status(403).json({ error: "Unauthorized" });
+		const { role } = jwt.verify(token, SECRET_KEY);
 
-// Login Route (JWT Generation)
-app.post("/login", (req, res) => {
-	const { email, password } = req.body;
-	const user = users[email];
-	if (user && user.password === password) {
-		const token = jwt.sign({ email, role: user.role }, SECRET_KEY, {
-			expiresIn: "1h",
-		});
-		return res.json({ token, role: user.role });
+		if (role !== "admin") {
+			return res.status(403).json({ error: "Admin access required" });
+		}
+		next();
+	} catch (e) {
+		res.status(403).json({ error: "unauthorized" });
 	}
-	res.status(401).json({ error: "Invalid credentials" });
-});
+}
 
 // Fetch Available Rooms
 app.get("/rooms", authenticate, (req, res) => {
 	res.json(rooms);
+});
+
+// Fetch All Bookings (For Admins)
+app.get("/bookings", authenticate, authorizeAdmin, (req, res) => {
+	res.json(bookings);
+});
+
+// Fetch Booking Counts for Each Room (Admin-Only for Chart)
+app.get("/booking-counts", authenticate, authorizeAdmin, (req, res) => {
+	const roomBookingCounts = rooms.map((room) => ({
+		roomName: room.name,
+		count: bookings.filter((booking) => booking.roomId === room.id).length,
+	}));
+	res.json(roomBookingCounts);
+});
+
+// Time Series Booking Count Data (Admin-Only for Chart)
+app.get("/booking-series", authenticate, authorizeAdmin, (req, res) => {
+	const { startDate, endDate } = req.query;
+
+	const seriesData = {};
+
+	// biome-ignore lint/complexity/noForEach: <explanation>
+	bookings
+		.filter(
+			(booking) =>
+				new Date(booking.date) >= new Date(startDate) &&
+				new Date(booking.date) <= new Date(endDate),
+		)
+		.forEach((booking) => {
+			if (!seriesData[booking.date]) {
+				seriesData[booking.date] = 0;
+			}
+			seriesData[booking.date] += 1;
+		});
+
+	res.json(seriesData);
 });
 
 // Create New Booking
@@ -119,6 +152,19 @@ app.post("/bookings", authenticate, (req, res) => {
 	res.status(201).json({ message: "Booking created successfully", booking });
 });
 
+// Login Route (JWT Generation)
+app.post("/login", (req, res) => {
+	const { email, password } = req.body;
+	const user = users[email];
+	if (user && user.password === password) {
+		const token = jwt.sign({ email, role: user.role }, SECRET_KEY, {
+			expiresIn: "1h",
+		});
+		return res.json({ token, role: user.role });
+	}
+	res.status(401).json({ error: "Invalid credentials" });
+});
+
 // Delete Booking (Admin Only)
 app.delete("/bookings/:bookingId", authenticate, authorizeAdmin, (req, res) => {
 	const { bookingId } = req.params;
@@ -148,49 +194,12 @@ app.delete("/bookings/:bookingId", authenticate, authorizeAdmin, (req, res) => {
 		.json({ message: "Booking deleted successfully", booking: deletedBooking });
 });
 
-// Fetch All Bookings (For Admins)
-app.get("/bookings", authenticate, authorizeAdmin, (req, res) => {
-	res.json(bookings);
-});
-
 // Fetch User's Bookings (For Regular Users)
 app.post("/my-bookings", authenticate, (req, res) => {
 	const userBookings = bookings.filter(
 		(booking) => booking.bookedBy === req.user.email,
 	);
 	res.json(userBookings);
-});
-
-// Fetch Booking Counts for Each Room (Admin-Only for Chart)
-app.get("/booking-counts", authenticate, authorizeAdmin, (req, res) => {
-	const roomBookingCounts = rooms.map((room) => ({
-		roomName: room.name,
-		count: bookings.filter((booking) => booking.roomId === room.id).length,
-	}));
-	res.json(roomBookingCounts);
-});
-
-// Time Series Booking Count Data (Admin-Only for Chart)
-app.get("/booking-series", authenticate, authorizeAdmin, (req, res) => {
-	const { startDate, endDate } = req.query;
-
-	const seriesData = {};
-
-	// biome-ignore lint/complexity/noForEach: <explanation>
-	bookings
-		.filter(
-			(booking) =>
-				new Date(booking.date) >= new Date(startDate) &&
-				new Date(booking.date) <= new Date(endDate),
-		)
-		.forEach((booking) => {
-			if (!seriesData[booking.date]) {
-				seriesData[booking.date] = 0;
-			}
-			seriesData[booking.date] += 1;
-		});
-
-	res.json(seriesData);
 });
 
 // WebSocket Connection Handling

@@ -57,10 +57,10 @@ const Layout = () => {
 				</NavigationMenuItem> */}
 				<NavigationMenuItem>
 					<NavigationMenuLink asChild>
-						<Link href="/bookings">
+						<Link href="/booking">
 							<Button
 								variant="link"
-								className={`tw-rounded-none ${getActiveClass(path, "bookings")}`}
+								className={`tw-rounded-none ${getActiveClass(path, "booking")}`}
 							>
 								Bookings
 							</Button>
