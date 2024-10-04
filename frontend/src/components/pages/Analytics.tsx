@@ -34,10 +34,10 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 const Analytics = () => {
-	const [startDate, setStartDate] = useState<string>(new Date().toDateString());
-	const [endDate, setEndDate] = useState<string>(
-		new Date(Date.now() + 1000 * 60 * 60 * 24).toDateString(),
+	const [startDate, setStartDate] = useState<string>(
+		new Date(Date.now() - 1000 * 60 * 60 * 24).toDateString(),
 	);
+	const [endDate, setEndDate] = useState<string>(new Date().toDateString());
 
 	const {
 		bookingsData,
@@ -59,11 +59,12 @@ const Analytics = () => {
 			}))
 		: [];
 
-	const setPastWeek = () => {
+	const setPastDays = (days: number) => {
 		const newStart = new Date(
-			Date.now() - 1000 * 60 * 60 * 24 * 7,
+			Date.now() - 1000 * 60 * 60 * 24 * days,
 		).toDateString();
 		const newEnd = new Date().toDateString();
+		console.log(`new startdate: ${newStart} new end date ${newEnd}`);
 		setStartDate(newStart);
 		setEndDate(newEnd);
 		fetchData();
@@ -126,37 +127,53 @@ const Analytics = () => {
 							<ErrorMessage errorMsg="Error occured while fetching time series data" />
 						) : isTimeSeriesDataLoading ? (
 							"Loading..."
-						) : Object.keys(bookingSeriesData).length > 0 ? (
+						) : (
 							<>
-								<div className="tw-absolute tw-top-5 tw-right-6">
-									<span className="tw-px-1">Past:</span>
+								<div className="tw-absolute tw-top-5 tw-right-6 tw-flex tw-gap-[2px] tw-items-center tw-text-[12px]">
+									<span className="">Past:</span>
 									<button
 										type="button"
-										className="tw-border-2 tw-p-[4px] tw-text-sm tw-rounded-[4px] tw-border-black"
-										onClick={setPastWeek}
+										className="tw-border-[1px] tw-px-[2px] tw-text-[12px] tw-rounded-[4px] tw-border-black"
+										onClick={() => setPastDays(1)}
 									>
-										week
+										Day
+									</button>
+									<button
+										type="button"
+										className="tw-border-[1px] tw-px-[2px] tw-text-[12px] tw-rounded-[4px] tw-border-black"
+										onClick={() => setPastDays(7)}
+									>
+										Week
+									</button>
+									<button
+										type="button"
+										className="tw-border-[1px] tw-px-[2px] tw-text-[12px] tw-rounded-[4px] tw-border-black"
+										onClick={() => setPastDays(30)}
+									>
+										Month
 									</button>
 								</div>
-								<ChartContainer
-									config={chartConfig}
-									className="tw-min-h-[200px] tw-w-[300px]"
-								>
-									<LineChart
-										data={chartData}
-										margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+								{Object.keys(bookingSeriesData).length > 0 ? (
+									<ChartContainer
+										config={chartConfig}
+										className="tw-min-h-[200px] tw-w-[300px]"
 									>
-										<CartesianGrid strokeDasharray="3 3" />
-										<XAxis dataKey="date" />
-										<YAxis />
-										<Tooltip />
-										<Legend />
-										<Line type="monotone" dataKey="value" stroke="#8884d8" />
-									</LineChart>
-								</ChartContainer>
+										<LineChart
+											data={chartData}
+											margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+										>
+											<CartesianGrid strokeDasharray="3 3" />
+											<XAxis dataKey="date" />
+											<YAxis />
+											<Tooltip />
+											<Legend />
+											<Line type="monotone" dataKey="value" stroke="#8884d8" />
+										</LineChart>
+									</ChartContainer>
+								) : (
+									"There is no data to plot"
+								)}
 							</>
-						) : (
-							"There is no data to plot"
 						)}
 					</CardContent>
 				</Card>

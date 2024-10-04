@@ -22,7 +22,7 @@ const useBookingsTimeSeries = (startDate: string, endDate: string) => {
 		refetch: fetchData,
 		error,
 	} = useQuery<BookingsTimeSeries | API_ERROR>({
-		queryKey: ["bookingTimeSeries"],
+		queryKey: ["bookingTimeSeries", startDate, endDate],
 		queryFn: () => fetchQuery(),
 		enabled: !!(startDate && endDate),
 	});
