@@ -105,6 +105,10 @@ const LayoutWrapper = ({ children }: { children: ReactNode }) => {
 		}
 	}, [isAuthenticated, navigate]);
 
+	if (!isAuthenticated) {
+		return null;
+	}
+
 	return (
 		<div className="tw-h-screen tw-pr-1 tw-bg-gradient-to-tl tw-from-white tw-to-zinc-50 tw-text-slate-800 tw-flex">
 			<div className="tw-py-2">
